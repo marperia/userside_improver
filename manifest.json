@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Telnet Link & Commands Extractor",
+  "version": "1.0",
+  "description": "Extracts IPs with ports from textarea and adds telnet links and command templates",
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "clipboardRead"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://userside.piramida.local/*", "https://userside.piramida.local/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ]
+}
