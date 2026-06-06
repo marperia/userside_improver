@@ -39,9 +39,11 @@ function findAndAddPhoneButton() {
                     if (digitsOnly.startsWith('8') && digitsOnly.length === 11) {
                         formattedPhone = digitsOnly; // 89233080219
                     } else if (digitsOnly.startsWith('7') && digitsOnly.length === 11) {
-                        formattedPhone = digitsOnly; // 79233080219
+                        formattedPhone = '8' + digitsOnly.substring(1); // 79233080219 -> 89233080219
                     } else if (digitsOnly.length === 10) {
                         formattedPhone = '8' + digitsOnly; // 9233080219 -> 89233080219
+                    } else if (digitsOnly.length === 5) {
+                        formattedPhone = "839155" + digitsOnly; // 70027 -> 83915570027
                     }
                     
                     if (!phoneCell.querySelector('.phone-copy-btn')) {
