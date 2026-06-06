@@ -1,8 +1,12 @@
 {
   "manifest_version": 2,
-  "name": "Telnet Link & Commands Extractor",
+  "name": "Userside Improver",
   "version": "1.0",
-  "description": "Extracts IPs with ports from textarea and adds telnet links and command templates",
+  "description": "Extracts IPs with ports and add some copy-paste buttons to the Userside interface",
+  "icons": {
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png"
+  },
   "permissions": [
     "activeTab",
     "clipboardWrite",
@@ -13,10 +17,6 @@
       "matches": ["http://userside.piramida.local/*", "https://userside.piramida.local/*"],
       "js": ["content.js"],
       "css": ["styles.css"],
-      "icons": {
-        "48": "icons/icon-48.png",
-        "96": "icons/icon-96.png"
-      },
       "run_at": "document_end"
     }
   ]
