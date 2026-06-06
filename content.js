@@ -1,5 +1,85 @@
-// ===== TELNET EXTRACTOR - ФИНАЛЬНАЯ ВЕРСИЯ (РАБОЧЕЕ КОПИРОВАНИЕ) =====
+// ===== TELNET EXTRACTOR - С КНОПКОЙ ТЕЛЕФОНА =====
 console.log('[TelnetExtractor] Скрипт загружен');
+
+// ===== Функция для поиска и добавления кнопки телефона в таблицу =====
+function findAndAddPhoneButton() {
+    console.log('[TelnetExtractor] Поиск телефона...');
+    
+    // Ищем все строки таблицы
+    const rows = document.querySelectorAll('tr');
+    
+    for (let row of rows) {
+        // Получаем все дочерние ячейки строки
+        const cells = row.children;
+        
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+            
+            // Ищем левую ячейку с текстом
+            if (cell.textContent.includes('Дополнительные контакты для связи:')) {
+                console.log('[TelnetExtractor] Найдена строка с контактами');
+                
+                // Берем следующую ячейку (правую) по индексу
+                const phoneCell = cells[i + 1];
+                
+                if (phoneCell) {
+                    const phoneText = phoneCell.textContent.trim();
+                    console.log('[TelnetExtractor] Найден номер телефона:', phoneText);
+                    
+                    // Очищаем номер от всех разделителей (черточки, пробелы, скобки)
+                    let cleanPhone = phoneText.replace(/[\s\-\(\)]/g, '');
+                    
+                    // Извлекаем только цифры
+                    const digitsOnly = cleanPhone.replace(/\D/g, '');
+                    
+                    // Форматируем номер (оставляем как есть, без замены 8 на +7)
+                    let formattedPhone = digitsOnly;
+                    
+                    // Если номер начинается с 8 или 7, оставляем как есть
+                    if (digitsOnly.startsWith('8') && digitsOnly.length === 11) {
+                        formattedPhone = digitsOnly; // 89233080219
+                    } else if (digitsOnly.startsWith('7') && digitsOnly.length === 11) {
+                        formattedPhone = digitsOnly; // 79233080219
+                    } else if (digitsOnly.length === 10) {
+                        formattedPhone = '8' + digitsOnly; // 9233080219 -> 89233080219
+                    }
+                    
+                    if (!phoneCell.querySelector('.phone-copy-btn')) {
+                        const phoneButton = document.createElement('button');
+                        phoneButton.textContent = '📋 Копировать телефон';
+                        phoneButton.className = 'phone-copy-btn';
+                        phoneButton.type = 'button';
+                        
+                        phoneButton.addEventListener('click', async (event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            
+                            const originalText = phoneButton.textContent;
+                            // Копируем номер в том виде, как он отображается (с 8)
+                            const success = await copyToClipboard(formattedPhone, phoneButton);
+                            
+                            if (success) {
+                                phoneButton.textContent = '✅ Скопировано!';
+                                setTimeout(() => {
+                                    phoneButton.textContent = originalText;
+                                }, 2000);
+                            } else {
+                                phoneButton.textContent = '❌ Ошибка';
+                                setTimeout(() => {
+                                    phoneButton.textContent = originalText;
+                                }, 2000);
+                            }
+                        });
+                        
+                        phoneCell.appendChild(phoneButton);
+                        console.log('[TelnetExtractor] Кнопка телефона добавлена, номер:', formattedPhone);
+                    }
+                }
+                break;
+            }
+        }
+    }
+}
 
 function findAllTextareas() {
     const allTextareas = document.querySelectorAll('textarea');
@@ -298,6 +378,9 @@ function observeTextarea(textarea) {
 
 function init() {
     console.log('[TelnetExtractor] Инициализация...');
+    
+    // Поиск телефона в таблице и добавление кнопки
+    findAndAddPhoneButton();
     
     const allTextareas = findAllTextareas();
     

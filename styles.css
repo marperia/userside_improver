@@ -106,3 +106,21 @@
     border: none;
     border-top: 1px solid #ddd;
 }
+
+/* Стили для кнопки телефона */
+.phone-copy-btn {
+    margin-left: 10px;
+    padding: 4px 8px;
+    background: #4a5568;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 11px;
+    font-family: monospace;
+    transition: all 0.2s;
+}
+
+.phone-copy-btn:hover {
+    background: #2d3748;
+}
