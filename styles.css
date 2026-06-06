@@ -124,3 +124,25 @@
 .phone-copy-btn:hover {
     background: #2d3748;
 }
+
+/* Стили для кнопки вставки из буфера */
+.paste-from-clipboard-btn {
+    padding: 8px 16px;
+    background: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: monospace;
+    transition: all 0.2s;
+}
+
+.paste-from-clipboard-btn:hover {
+    background: #138496;
+    transform: scale(1.02);
+}
+
+.paste-button-container {
+    margin-bottom: 10px;
+}

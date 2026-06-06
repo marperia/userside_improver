@@ -1,6 +1,110 @@
 // ===== TELNET EXTRACTOR - С КНОПКОЙ ТЕЛЕФОНА =====
 console.log('[TelnetExtractor] Скрипт загружен');
 
+// ===== Функция для вставки текста из буфера обмена в textarea opis =====
+async function pasteFromClipboardToOpis() {
+    console.log('[TelnetExtractor] Вставка из буфера обмена в textarea opis...');
+    
+    // Находим textarea с name="opis"
+    const opisTextarea = document.querySelector('textarea[name="opis"]');
+    
+    if (!opisTextarea) {
+        console.log('[TelnetExtractor] Textarea с name="opis" не найдена');
+        const notification = document.createElement('div');
+        notification.innerHTML = '⚠️ Textarea "opis" не найдена на странице';
+        notification.style.cssText = 'position:fixed; bottom:10px; right:10px; background:#ff9800; color:white; padding:8px 12px; border-radius:5px; z-index:10000; font-size:12px; font-family:monospace;';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+        return;
+    }
+    
+    try {
+        // Читаем текст из буфера обмена
+        const clipboardText = await navigator.clipboard.readText();
+        console.log('[TelnetExtractor] Текст из буфера:', clipboardText);
+        
+        // Получаем текущий текст из textarea
+        const currentText = opisTextarea.value;
+        
+        // Формируем новый текст: текст кнопки + текст из буфера
+        const buttonText = '[Добавлено расширением] ';
+        const newText = currentText + buttonText + clipboardText + '\n';
+        
+        // Вставляем в textarea
+        opisTextarea.value = newText;
+        
+        // Триггерим событие input, чтобы расширение обработало новые данные
+        const event = new Event('input', { bubbles: true });
+        opisTextarea.dispatchEvent(event);
+        
+        console.log('[TelnetExtractor] Текст успешно вставлен');
+        
+        // Показываем уведомление об успехе
+        const notification = document.createElement('div');
+        notification.innerHTML = '✅ Текст из буфера вставлен в поле "opis"';
+        notification.style.cssText = 'position:fixed; bottom:10px; right:10px; background:#4CAF50; color:white; padding:8px 12px; border-radius:5px; z-index:10000; font-size:12px; font-family:monospace;';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+        
+    } catch (err) {
+        console.error('[TelnetExtractor] Ошибка при вставке из буфера:', err);
+        
+        let errorMessage = 'Не удалось вставить текст. ';
+        if (err.name === 'NotAllowedError') {
+            errorMessage += 'Разрешите доступ к буферу обмена.';
+        } else if (err.name === 'ReadError') {
+            errorMessage += 'Не удалось прочитать буфер обмена.';
+        } else {
+            errorMessage += 'Ошибка: ' + err.message;
+        }
+        
+        const notification = document.createElement('div');
+        notification.innerHTML = '❌ ' + errorMessage;
+        notification.style.cssText = 'position:fixed; bottom:10px; right:10px; background:#f44336; color:white; padding:8px 12px; border-radius:5px; z-index:10000; font-size:12px; font-family:monospace; max-width: 300px;';
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 5000);
+    }
+}
+
+// Функция для создания кнопки вставки из буфера
+function createPasteButton() {
+    // Проверяем, есть ли уже такая кнопка
+    if (document.querySelector('.paste-from-clipboard-btn')) {
+        return;
+    }
+    
+    // Находим textarea opis
+    const opisTextarea = document.querySelector('textarea[name="opis"]');
+    if (!opisTextarea) {
+        console.log('[TelnetExtractor] Textarea opis не найдена для кнопки');
+        return;
+    }
+    
+    // Создаем контейнер для кнопки
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'paste-button-container';
+    buttonContainer.style.marginTop = '10px';
+    buttonContainer.style.marginBottom = '10px';
+    
+    // Создаем кнопку
+    const pasteButton = document.createElement('button');
+    pasteButton.textContent = '📋 Вставить из буфера в opis';
+    pasteButton.className = 'paste-from-clipboard-btn';
+    pasteButton.type = 'button';
+    
+    pasteButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        await pasteFromClipboardToOpis();
+    });
+    
+    buttonContainer.appendChild(pasteButton);
+    
+    // Вставляем кнопку перед textarea opis
+    opisTextarea.parentElement.insertBefore(buttonContainer, opisTextarea);
+    console.log('[TelnetExtractor] Кнопка вставки из буфера добавлена');
+}
+
 // ===== Функция для поиска и добавления кнопки телефона в таблицу =====
 function findAndAddPhoneButton() {
     console.log('[TelnetExtractor] Поиск телефона...');
@@ -383,6 +487,11 @@ function init() {
     
     // Поиск телефона в таблице и добавление кнопки
     findAndAddPhoneButton();
+    
+    // Создание кнопки вставки из буфера
+    setTimeout(() => {
+        createPasteButton();
+    }, 500);
     
     const allTextareas = findAllTextareas();
     
