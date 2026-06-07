@@ -489,7 +489,7 @@ function init() {
     findAndAddPhoneButton();
     
     // Создание кнопки вставки из буфера
-    setTimeout(() => {
+    setInterval(() => {
         createPasteButton();
     }, 500);
     
