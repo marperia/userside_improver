@@ -567,6 +567,80 @@ function observeTextarea(textarea) {
     processTextarea(textarea);
 }
 
+// ===== Дополнительные функции для карточки абонента =====
+function addCustomerCardFeatures() {
+    // 1. Кнопка копирования лицевого счёта
+    const accountItems = document.querySelectorAll('.item');
+    for (const item of accountItems) {
+        const leftData = item.querySelector('.left_data');
+        if (leftData && leftData.textContent.trim() === 'Лицевой счет:') {
+            const accountDiv = item.querySelector('div:not(.left_data)');
+            if (accountDiv && !accountDiv.querySelector('.account-copy-btn')) {
+                const accountNum = accountDiv.textContent.trim();
+                const btn = document.createElement('button');
+                btn.textContent = '📋 Лицевой';
+                btn.className = 'account-copy-btn';
+                btn.type = 'button';
+                btn.style.cssText = 'margin-left:6px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;';
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const success = await copyToClipboard(accountNum, btn);
+                    if (success) {
+                        btn.textContent = '✅ Скопировано';
+                        setTimeout(() => { btn.textContent = '📋 Лицевой'; }, 2000);
+                    }
+                });
+                accountDiv.appendChild(btn);
+            }
+            break;
+        }
+    }
+
+    // 2. Ссылка на NetBox для IP
+    const ipMacItems = document.querySelectorAll('.table_data .item');
+    for (const item of ipMacItems) {
+        const divs = item.querySelectorAll('div');
+        if (divs.length >= 2) {
+            const firstDiv = divs[0];
+            const ipMatch = firstDiv.textContent.trim().match(/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+            const secondDiv = divs[1];
+            const macMatch = secondDiv.textContent.trim().match(/([0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2})/);
+
+            if (ipMatch && !firstDiv.querySelector('.ip-netbox-link')) {
+                const ip = ipMatch[1];
+                const link = document.createElement('a');
+                link.href = `http://192.168.4.13/search/?q=${ip}`;
+                link.target = '_blank';
+                link.textContent = '🔍 NetBox';
+                link.className = 'ip-netbox-link';
+                link.title = 'Поиск в NetBox';
+                link.style.cssText = 'margin-left:6px;text-decoration:none;font-size:12px;';
+                firstDiv.appendChild(link);
+            }
+
+            if (macMatch && !secondDiv.querySelector('.mac-copy-btn')) {
+                const mac = macMatch[1];
+                const btn = document.createElement('button');
+                btn.textContent = '📋 MAC';
+                btn.className = 'mac-copy-btn';
+                btn.type = 'button';
+                btn.style.cssText = 'margin-left:6px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;';
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const success = await copyToClipboard(mac, btn);
+                    if (success) {
+                        btn.textContent = '✅ Скопировано';
+                        setTimeout(() => { btn.textContent = '📋 MAC'; }, 2000);
+                    }
+                });
+                secondDiv.appendChild(btn);
+            }
+        }
+    }
+}
+
 function init() {
     console.log('[TelnetExtractor] Инициализация...');
 
@@ -577,6 +651,11 @@ function init() {
     setInterval(() => {
         createPasteButton();
     }, 500);
+
+    // Дополнительные функции для карточки абонента
+    setTimeout(() => {
+        addCustomerCardFeatures();
+    }, 1000);
 
     const allTextareas = findAllTextareas();
 
