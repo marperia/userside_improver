@@ -1,96 +1,181 @@
 // ===== TELNET EXTRACTOR - С КНОПКОЙ ТЕЛЕФОНА =====
 console.log('[TelnetExtractor] Скрипт загружен');
 
-// ===== Функция для вставки текста из буфера обмена в textarea opis =====
-async function pasteFromClipboardToOpis() {
-    console.log('[TelnetExtractor] Вставка из буфера обмена в textarea opis...');
-
-    // Находим textarea с name="opis"
-    const opisTextarea = document.querySelector('textarea[name="opis"]');
-
-    if (!opisTextarea) {
-        console.log('[TelnetExtractor] Textarea с name="opis" не найдена');
-        showNotification('⚠️ Textarea "opis" не найдена на странице', '#ff9800');
-        return;
-    }
-
-    try {
-        // Читаем текст из буфера обмена
-        const clipboardText = await navigator.clipboard.readText();
-        console.log('[TelnetExtractor] Текст из буфера:', clipboardText);
-
-        // Получаем текущий текст из textarea
-        const currentText = opisTextarea.value;
-
-        // Формируем новый текст: текст кнопки + текст из буфера
-        const buttonText = '[Добавлено расширением] ';
-        const newText = currentText + buttonText + clipboardText + '\n';
-
-        // Вставляем в textarea
-        opisTextarea.value = newText;
-
-        // Триггерим событие input, чтобы расширение обработало новые данные
-        const event = new Event('input', { bubbles: true });
-        opisTextarea.dispatchEvent(event);
-
-        console.log('[TelnetExtractor] Текст успешно вставлен');
-
-        // Показываем уведомление об успехе
-        showNotification('✅ Текст из буфера вставлен в поле "opis"', '#4CAF50');
-
-    } catch (err) {
-        console.error('[TelnetExtractor] Ошибка при вставке из буфера:', err);
-
-        let errorMessage = 'Не удалось вставить текст. ';
-        if (err.name === 'NotAllowedError') {
-            errorMessage += 'Разрешите доступ к буферу обмена.';
-        } else if (err.name === 'ReadError') {
-            errorMessage += 'Не удалось прочитать буфер обмена.';
-        } else {
-            errorMessage += 'Ошибка: ' + err.message;
+// ===== Чтение буфера обмена с fallback =====
+function readClipboardWithFallback() {
+    return new Promise(async (resolve) => {
+        // Способ 1: execCommand('paste') — работает на HTTP c permission clipboardRead
+        try {
+            const tempInput = document.createElement('textarea');
+            tempInput.style.position = 'fixed';
+            tempInput.style.top = '-9999px';
+            tempInput.style.left = '-9999px';
+            document.body.appendChild(tempInput);
+            tempInput.focus();
+            const success = document.execCommand('paste');
+            const pastedText = tempInput.value;
+            document.body.removeChild(tempInput);
+            if (success && pastedText) {
+                resolve(pastedText);
+                return;
+            }
+        } catch (e) {
+            console.log('[TelnetExtractor] execCommand paste не сработал:', e);
         }
 
-        showNotification('❌ ' + errorMessage, '#d83c30');
-    }
+        // Способ 2: Clipboard API (только в secure context)
+        if (navigator.clipboard && typeof navigator.clipboard.readText === 'function') {
+            try {
+                const clipboardText = await navigator.clipboard.readText();
+                resolve(clipboardText);
+                return;
+            } catch (err) {
+                console.error('[TelnetExtractor] Clipboard API ошибка:', err);
+                if (err.name === 'NotAllowedError') {
+                    showNotification('❌ Нет разрешения на чтение буфера обмена', '#d83c30');
+                    resolve(null);
+                    return;
+                }
+            }
+        }
+
+        // Способ 3: модальное окно с ручной вставкой
+        showPasteFallbackModal((text) => resolve(text));
+    });
 }
 
-// Функция для создания кнопки вставки из буфера
-function createPasteButton() {
-    // Проверяем, есть ли уже такая кнопка
-    if (document.querySelector('.paste-from-clipboard-btn')) {
-        return;
+function showPasteFallbackModal(insertCallback) {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position:fixed; top:0; left:0; width:100%; height:100%;
+        background:rgba(0,0,0,0.5); z-index:99999;
+        display:flex; align-items:center; justify-content:center;
+        font-family:monospace;
+    `;
+
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        background:#fff; padding:20px; border-radius:8px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.3); max-width:500px; width:90%;
+    `;
+
+    modal.innerHTML = `
+        <h3 style="margin:0 0 10px;font-size:14px;">📋 Вставьте текст вручную</h3>
+        <p style="margin:0 0 10px;font-size:12px;color:#666;">
+            Браузер не разрешает читать буфер обмена напрямую.
+            Нажмите <strong>Ctrl+V</strong> в поле ниже, затем нажмите "Вставить":
+        </p>
+        <textarea id="paste-fallback-input"
+            style="width:100%;height:80px;padding:6px;font-size:12px;
+                   border:1px solid #ccc;border-radius:4px;box-sizing:border-box;
+                   font-family:monospace;"
+            placeholder="Нажмите Ctrl+V здесь..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px;justify-content:flex-end;">
+            <button id="paste-fallback-cancel"
+                style="padding:6px 16px;border:1px solid #ccc;border-radius:4px;
+                       background:#fff;cursor:pointer;font-size:12px;">Отмена</button>
+            <button id="paste-fallback-submit"
+                style="padding:6px 16px;border:none;border-radius:4px;
+                       background:#17a2b8;color:#fff;cursor:pointer;font-size:12px;">Вставить</button>
+        </div>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    const textarea = modal.querySelector('#paste-fallback-input');
+    const submitBtn = modal.querySelector('#paste-fallback-submit');
+    const cancelBtn = modal.querySelector('#paste-fallback-cancel');
+
+    textarea.focus();
+
+    function close() {
+        overlay.remove();
     }
 
-    // Находим textarea opis
-    const opisTextarea = document.querySelector('textarea[name="opis"]');
-    if (!opisTextarea) {
-        console.log('[TelnetExtractor] Textarea opis не найдена для кнопки');
-        return;
-    }
-
-    // Создаем контейнер для кнопки
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'paste-button-container';
-    buttonContainer.style.marginTop = '10px';
-    buttonContainer.style.marginBottom = '10px';
-
-    // Создаем кнопку
-    const pasteButton = document.createElement('button');
-    pasteButton.textContent = '📋 Вставить из буфера в opis';
-    pasteButton.className = 'paste-from-clipboard-btn';
-    pasteButton.type = 'button';
-
-    pasteButton.addEventListener('click', async (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        await pasteFromClipboardToOpis();
+    submitBtn.addEventListener('click', () => {
+        const text = textarea.value.trim();
+        if (!text) {
+            showNotification('⚠️ Поле ввода пустое', '#ff9800');
+            return;
+        }
+        insertCallback(text);
+        close();
     });
 
-    buttonContainer.appendChild(pasteButton);
+    cancelBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) close();
+    });
+}
 
-    // Вставляем кнопку перед textarea opis
+// Функция для создания кнопок вставки в opis
+function createPasteButton() {
+    if (document.querySelector('.paste-from-clipboard-btn')) return;
+
+    const opisTextarea = document.querySelector('textarea[name="opis"]');
+    if (!opisTextarea) {
+        console.log('[TelnetExtractor] Textarea opis не найдена для кнопок');
+        return;
+    }
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'paste-button-container';
+
+    function appendToOpis(text) {
+        const currentText = opisTextarea.value;
+        opisTextarea.value = currentText + text;
+        const event = new Event('input', { bubbles: true });
+        opisTextarea.dispatchEvent(event);
+    }
+
+    // Кнопка "нет отв х3"
+    const btn1 = document.createElement('button');
+    btn1.textContent = '📋 Нет отв х3';
+    btn1.className = 'paste-from-clipboard-btn';
+    btn1.type = 'button';
+    btn1.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clipText = await readClipboardWithFallback();
+        if (clipText !== null) {
+            appendToOpis(clipText + ' нет ответа х3');
+            showNotification('✅ "Нет ответа х3" добавлено', '#4CAF50');
+        }
+    });
+
+    // Кнопка "Всё заработало"
+    const btn2 = document.createElement('button');
+    btn2.textContent = '✅ OK';
+    btn2.className = 'paste-from-clipboard-btn';
+    btn2.type = 'button';
+    btn2.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        appendToOpis('Всё заработало');
+        showNotification('✅ "всё заработало" добавлено', '#4CAF50');
+    });
+
+    // Кнопка "Зарегал мак"
+    const btn3 = document.createElement('button');
+    btn3.textContent = '📋 Зарегал мак';
+    btn3.className = 'paste-from-clipboard-btn';
+    btn3.type = 'button';
+    btn3.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clipText = await readClipboardWithFallback();
+        if (clipText !== null) {
+            appendToOpis('Зарегал мак ' + clipText);
+            showNotification('✅ "Зарегал мак" добавлено', '#4CAF50');
+        }
+    });
+
+    buttonContainer.appendChild(btn1);
+    buttonContainer.appendChild(btn2);
+    buttonContainer.appendChild(btn3);
     opisTextarea.parentElement.insertBefore(buttonContainer, opisTextarea);
-    console.log('[TelnetExtractor] Кнопка вставки из буфера добавлена');
+    console.log('[TelnetExtractor] Кнопки добавлены');
 }
 
 // ===== Функция для поиска и добавления кнопки телефона в таблицу =====
