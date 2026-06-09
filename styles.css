@@ -62,6 +62,15 @@
     background: #2d3748;
 }
 
+/* Кнопка Zabbix */
+.copy-button.zabbix-btn {
+    background: #d73a3a;
+}
+
+.copy-button.zabbix-btn:hover {
+    background: #b32d2d;
+}
+
 /* Кнопки команд */
 .command-item {
     display: flex;

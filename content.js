@@ -360,9 +360,21 @@ function createLinkAndButtons(ip, port, index) {
         window.location.href = `telnet://${ip}`;
     });
 
+    // Кнопка Zabbix
+    const zabbixBtn = document.createElement('button');
+    zabbixBtn.textContent = '📊 Zabbix';
+    zabbixBtn.className = 'copy-button zabbix-btn';
+    zabbixBtn.type = 'button';
+    zabbixBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        window.open(`http://10.10.20.30/zabbix.php?action=search&search=${ip}`, '_blank');
+    });
+
     buttonsRow.appendChild(copyIpBtn);
     buttonsRow.appendChild(copyPortBtn);
     buttonsRow.appendChild(telnetBtn);
+    buttonsRow.appendChild(zabbixBtn);
     container.appendChild(buttonsRow);
 
     // Команды
