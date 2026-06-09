@@ -352,7 +352,7 @@ function createLinkAndButtons(ip, port, index) {
     // Кнопка Telnet
     const telnetBtn = document.createElement('button');
     telnetBtn.textContent = '🔗 Telnet';
-    telnetBtn.className = 'copy-button';
+    telnetBtn.className = 'copy-button telnet-btn';
     telnetBtn.type = 'button';
     telnetBtn.addEventListener('click', async (event) => {
         event.preventDefault();

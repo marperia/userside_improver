@@ -44,7 +44,7 @@
     align-items: center;
 }
 
-/* Единый стиль для всех трех кнопок */
+/* Единый стиль для всех кнопок в строке (IP, порт, telnet, zabbix) */
 .copy-button {
     padding: 6px 12px;
     background: #4a5568;
@@ -60,6 +60,15 @@
 
 .copy-button:hover {
     background: #2d3748;
+}
+
+/* Telnet и Zabbix — синий */
+.copy-button.telnet-btn {
+    background: #1875a7;
+}
+
+.copy-button.telnet-btn:hover {
+    background: #125a82;
 }
 
 /* Кнопка Zabbix */
@@ -96,7 +105,7 @@
 
 .copy-btn {
     padding: 4px 12px;
-    background: #4a5568;
+    background: #1875a7;
     color: white;
     border: none;
     border-radius: 4px;
@@ -107,7 +116,7 @@
 }
 
 .copy-btn:hover {
-    background: #2d3748;
+    background: #125a82;
 }
 
 .separator {
