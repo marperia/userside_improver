@@ -639,6 +639,73 @@ function addCustomerCardFeatures() {
             }
         }
     }
+
+    // 3. Кнопки для IP и порта из Точки подключения
+    for (const item of accountItems) {
+        const leftData = item.querySelector('.left_data');
+        if (leftData && leftData.textContent.trim() === 'Точка подключения:') {
+            const contentDiv = item.querySelector('div:not(.left_data)');
+            if (!contentDiv) break;
+
+            const italicEl = contentDiv.querySelector('i');
+            if (!italicEl || contentDiv.querySelector('.equipment-ip-copy')) break;
+
+            const parts = italicEl.innerHTML.split(/<br\s*\/?>/i);
+            let ip = null;
+
+            const newParts = parts.map(part => {
+                const ipMatch = part.match(/IP:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+                if (ipMatch) {
+                    ip = ipMatch[1];
+                    return `IP: ${ip} <button class="equipment-ip-copy" data-ip="${ip}" style="margin-left:4px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;">📋 ${ip}</button> <button class="equipment-zabbix-btn" data-ip="${ip}" style="margin-left:4px;padding:2px 6px;background:#d73a3a;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;">📊 Zabbix</button>`;
+                }
+                const portMatch = part.match(/порт:\s*(.*)/);
+                if (portMatch) {
+                    return `порт: ${portMatch[1].trim()} <button class="equipment-port-copy" data-port="${portMatch[1].trim()}" style="margin-left:4px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;">📋 Порт</button>`;
+                }
+                return part;
+            });
+
+            italicEl.innerHTML = newParts.join('<br>');
+
+            italicEl.querySelectorAll('.equipment-ip-copy').forEach(btn => {
+                const ipVal = btn.dataset.ip;
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const success = await copyToClipboard(ipVal, btn);
+                    if (success) {
+                        btn.textContent = '✅ Скопировано';
+                        setTimeout(() => { btn.textContent = '📋 ' + ipVal; }, 2000);
+                    }
+                });
+            });
+
+            italicEl.querySelectorAll('.equipment-port-copy').forEach(btn => {
+                const portVal = btn.dataset.port;
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const success = await copyToClipboard(portVal, btn);
+                    if (success) {
+                        btn.textContent = '✅ Скопировано';
+                        setTimeout(() => { btn.textContent = '📋 Порт'; }, 2000);
+                    }
+                });
+            });
+
+            italicEl.querySelectorAll('.equipment-zabbix-btn').forEach(btn => {
+                const ipVal = btn.dataset.ip;
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.open(`http://10.10.20.30/zabbix.php?action=search&search=${ipVal}`, '_blank');
+                });
+            });
+
+            break;
+        }
+    }
 }
 
 function init() {
