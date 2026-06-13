@@ -145,11 +145,10 @@
 
 /* Стили для кнопки вставки из буфера */
 .paste-from-clipboard-btn {
-    padding: 8px 16px;
-    background: #17a2b8;
+    padding: 4px 8px;
+    background: #1875a7;
     color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
     font-family: monospace;
@@ -157,7 +156,7 @@
 }
 
 .paste-from-clipboard-btn:hover {
-    background: #138496;
+    background: #095882;
 }
 
 .paste-button-container {

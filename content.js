@@ -121,6 +121,8 @@ function createPasteButton() {
 
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'paste-button-container';
+    const secondRow = document.createElement('div');
+    secondRow.className = 'paste-button-container';
 
     function appendToOpis(text) {
         const currentText = opisTextarea.value;
@@ -171,9 +173,42 @@ function createPasteButton() {
         }
     });
 
+    // Кнопка "Скинул инструкции в Максе"
+    const btn4 = document.createElement('button');
+    btn4.textContent = 'МАХ Инс';
+    btn4.className = 'paste-from-clipboard-btn';
+    btn4.type = 'button';
+    btn4.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clipText = await readClipboardWithFallback();
+        if (clipText !== null) {
+            appendToOpis('Скинул инструкции в Максе ' + clipText + ' ');
+            showNotification('✅ "МАХ Инструкции" добавлено', '#4CAF50');
+        }
+    });
+
+    // Кнопка "Отписал в Максе"
+    const btn5 = document.createElement('button');
+    btn5.textContent = 'МАХ Отп';
+    btn5.className = 'paste-from-clipboard-btn';
+    btn5.type = 'button';
+    btn5.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clipText = await readClipboardWithFallback();
+        if (clipText !== null) {
+            appendToOpis('Отписал в Максе ' + clipText + ' ');
+            showNotification('✅ "МАХ Отписал" добавлено', '#4CAF50');
+        }
+    });
+
     buttonContainer.appendChild(btn1);
     buttonContainer.appendChild(btn2);
     buttonContainer.appendChild(btn3);
+    secondRow.appendChild(btn4);
+    secondRow.appendChild(btn5);
+    opisTextarea.parentElement.insertBefore(secondRow, opisTextarea);
     opisTextarea.parentElement.insertBefore(buttonContainer, opisTextarea);
     console.log('[TelnetExtractor] Кнопки добавлены');
 }
