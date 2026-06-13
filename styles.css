@@ -52,7 +52,6 @@
     cursor: pointer;
     font-size: 12px;
     font-family: monospace;
-    transition: all 0.2s;
     flex: 0 0 auto;
 }
 
@@ -125,7 +124,6 @@
     cursor: pointer;
     font-size: 11px;
     white-space: nowrap;
-    transition: all 0.2s;
 }
 
 .copy-btn:hover {
@@ -147,21 +145,22 @@
     cursor: pointer;
     font-size: 11px;
     font-family: monospace;
-    transition: all 0.2s;
+    border: none;
 }
 
 .phone-copy-btn:hover {
     background: #2d3748;
 }
 
-.account-copy-btn, .mac-copy-btn {
-    margin-left:6px;
-    padding:2px 6px;
-    background:#4a5568;
-    color:white;
-    border:none;
-    cursor:pointer;
-    font-size:11px;
+.account-copy-btn,
+.mac-copy-btn {
+    margin-left: 6px;
+    padding: 2px 6px;
+    background: #4a5568;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
 }
 
 .equipment-btn {
@@ -204,7 +203,6 @@
     cursor: pointer;
     font-size: 12px;
     font-family: monospace;
-    transition: all 0.2s;
 }
 
 .paste-from-clipboard-btn:hover {
