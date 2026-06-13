@@ -733,7 +733,7 @@ function addCustomerCardFeatures() {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    window.location.href(`telnet://${ipVal}`);
+                    window.location.href = (`telnet://${ipVal}`);
                 });
             });
 
