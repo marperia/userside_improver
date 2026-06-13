@@ -1,5 +1,5 @@
-// ===== TELNET EXTRACTOR - С КНОПКОЙ ТЕЛЕФОНА =====
-console.log('[TelnetExtractor] Скрипт загружен');
+// ===== USERSIDE IMPROVER - С КНОПКОЙ ТЕЛЕФОНА =====
+console.log('[Userside Improver] Скрипт загружен');
 
 // ===== Чтение буфера обмена с fallback =====
 function readClipboardWithFallback() {
@@ -20,7 +20,7 @@ function readClipboardWithFallback() {
                 return;
             }
         } catch (e) {
-            console.log('[TelnetExtractor] execCommand paste не сработал:', e);
+            console.log('[Userside Improver] execCommand paste не сработал:', e);
         }
 
         // Способ 2: Clipboard API (только в secure context)
@@ -30,7 +30,7 @@ function readClipboardWithFallback() {
                 resolve(clipboardText);
                 return;
             } catch (err) {
-                console.error('[TelnetExtractor] Clipboard API ошибка:', err);
+                console.error('[Userside Improver] Clipboard API ошибка:', err);
                 if (err.name === 'NotAllowedError') {
                     showNotification('❌ Нет разрешения на чтение буфера обмена', '#d83c30');
                     resolve(null);
@@ -115,7 +115,7 @@ function createPasteButton() {
 
     const opisTextarea = document.querySelector('textarea[name="opis"]');
     if (!opisTextarea) {
-        console.log('[TelnetExtractor] Textarea opis не найдена для кнопок');
+        console.log('[Userside Improver] Textarea opis не найдена для кнопок');
         return;
     }
 
@@ -210,12 +210,12 @@ function createPasteButton() {
     secondRow.appendChild(btn5);
     opisTextarea.parentElement.insertBefore(secondRow, opisTextarea);
     opisTextarea.parentElement.insertBefore(buttonContainer, opisTextarea);
-    console.log('[TelnetExtractor] Кнопки добавлены');
+    console.log('[Userside Improver] Кнопки добавлены');
 }
 
 // ===== Функция для поиска и добавления кнопки телефона в таблицу =====
 function findAndAddPhoneButton() {
-    console.log('[TelnetExtractor] Поиск телефона...');
+    console.log('[Userside Improver] Поиск телефона...');
 
     // Ищем все строки таблицы
     const rows = document.querySelectorAll('tr');
@@ -229,14 +229,14 @@ function findAndAddPhoneButton() {
 
             // Ищем левую ячейку с текстом
             if (cell.textContent.includes('Дополнительные контакты для связи:')) {
-                console.log('[TelnetExtractor] Найдена строка с контактами');
+                console.log('[Userside Improver] Найдена строка с контактами');
 
                 // Берем следующую ячейку (правую) по индексу
                 const phoneCell = cells[i + 1];
 
                 if (phoneCell) {
                     const phoneText = phoneCell.textContent.trim();
-                    console.log('[TelnetExtractor] Найден номер телефона:', phoneText);
+                    console.log('[Userside Improver] Найден номер телефона:', phoneText);
 
                     // Очищаем номер от всех разделителей (черточки, пробелы, скобки)
                     let cleanPhone = phoneText.replace(/[\s\-\(\)]/g, '');
@@ -286,7 +286,7 @@ function findAndAddPhoneButton() {
                         });
 
                         phoneCell.appendChild(phoneButton);
-                        console.log('[TelnetExtractor] Кнопка телефона добавлена, номер:', formattedPhone);
+                        console.log('[Userside Improver] Кнопка телефона добавлена, номер:', formattedPhone);
                     }
                 }
                 break;
@@ -297,10 +297,10 @@ function findAndAddPhoneButton() {
 
 function findAllTextareas() {
     const allTextareas = document.querySelectorAll('textarea');
-    console.log('[TelnetExtractor] Найдено textarea на странице:', allTextareas.length);
+    console.log('[Userside Improver] Найдено textarea на странице:', allTextareas.length);
 
     allTextareas.forEach((ta, idx) => {
-        console.log(`[TelnetExtractor] Textarea ${idx + 1}:`, {
+        console.log(`[Userside Improver] Textarea ${idx + 1}:`, {
             name: ta.name || '(нет name)',
             id: ta.id || '(нет id)',
             class: ta.className || '(нет class)'
@@ -367,16 +367,16 @@ function generateCommands(ip, port) {
 
 // Универсальная функция копирования текста
 async function copyToClipboard(text, button) {
-    console.log('[TelnetExtractor] Попытка скопировать:', text);
+    console.log('[Userside Improver] Попытка скопировать:', text);
 
     // Способ 1: Современный Clipboard API
     if (navigator.clipboard && navigator.clipboard.writeText) {
         try {
             await navigator.clipboard.writeText(text);
-            console.log('[TelnetExtractor] Скопировано через Clipboard API');
+            console.log('[Userside Improver] Скопировано через Clipboard API');
             return true;
         } catch (err) {
-            console.error('[TelnetExtractor] Clipboard API ошибка:', err);
+            console.error('[Userside Improver] Clipboard API ошибка:', err);
         }
     }
 
@@ -394,11 +394,11 @@ async function copyToClipboard(text, button) {
         document.body.removeChild(textarea);
 
         if (success) {
-            console.log('[TelnetExtractor] Скопировано через execCommand');
+            console.log('[Userside Improver] Скопировано через execCommand');
             return true;
         }
     } catch (err) {
-        console.error('[TelnetExtractor] execCommand ошибка:', err);
+        console.error('[Userside Improver] execCommand ошибка:', err);
     }
 
     return false;
@@ -542,7 +542,7 @@ function createLinkAndButtons(ip, port, index) {
 }
 
 function processTextarea(textarea) {
-    console.log('[TelnetExtractor] Обработка textarea');
+    console.log('[Userside Improver] Обработка textarea');
 
     const existingContainer = textarea.parentElement.querySelector('.telnet-extractor-wrapper');
     if (existingContainer) {
@@ -551,13 +551,13 @@ function processTextarea(textarea) {
 
     const text = textarea.value;
     if (!text || text.trim() === '') {
-        console.log('[TelnetExtractor] Textarea пуста');
+        console.log('[Userside Improver] Textarea пуста');
         return;
     }
 
-    console.log('[TelnetExtractor] Текст для анализа:', text.substring(0, 200));
+    console.log('[Userside Improver] Текст для анализа:', text.substring(0, 200));
     const matches = extractIpAndPort(text);
-    console.log('[TelnetExtractor] Найдено совпадений:', matches.length);
+    console.log('[Userside Improver] Найдено совпадений:', matches.length);
 
     if (matches.length === 0) return;
 
@@ -581,12 +581,12 @@ function processTextarea(textarea) {
     });
 
     textarea.parentElement.insertBefore(wrapper, textarea.nextSibling);
-    console.log('[TelnetExtractor] Элементы добавлены на страницу');
+    console.log('[Userside Improver] Элементы добавлены на страницу');
 }
 
 let debounceTimer;
 function observeTextarea(textarea) {
-    console.log('[TelnetExtractor] Начинаем наблюдение за textarea');
+    console.log('[Userside Improver] Начинаем наблюдение за textarea');
 
     textarea.addEventListener('input', () => {
         clearTimeout(debounceTimer);
@@ -741,7 +741,7 @@ function addCustomerCardFeatures() {
 }
 
 function init() {
-    console.log('[TelnetExtractor] Инициализация...');
+    console.log('[Userside Improver] Инициализация...');
 
     // Поиск телефона в таблице и добавление кнопки
     findAndAddPhoneButton();
@@ -759,17 +759,17 @@ function init() {
     const allTextareas = findAllTextareas();
 
     if (allTextareas.length === 0) {
-        console.log('[TelnetExtractor] На странице нет textarea');
-        showNotification('⚠️ Telnet Extractor: На странице не найдено полей ввода (textarea)', '#ff9800');
+        console.log('[Userside Improver] На странице нет textarea');
+        showNotification('⚠️ [Userside Improver]: На странице не найдено полей ввода (textarea)', '#ff9800');
         return;
     }
 
     allTextareas.forEach((textarea, index) => {
-        console.log(`[TelnetExtractor] Установка обработчика для textarea ${index + 1}`);
+        console.log(`[Userside Improver] Установка обработчика для textarea ${index + 1}`);
         observeTextarea(textarea);
     });
 
-    showNotification(`✅ Telnet Extractor активен (найдено ${allTextareas.length} textarea)`, '#4CAF50');
+    showNotification(`✅ [Userside Improver] активен (найдено ${allTextareas.length} textarea)`, '#4CAF50');
 }
 
 // Вспомогательная функция для уведомлений
@@ -793,7 +793,7 @@ const observer = new MutationObserver(() => {
         textareas.forEach(textarea => {
             if (!textarea.hasAttribute('data-telnet-extractor-attached')) {
                 textarea.setAttribute('data-telnet-extractor-attached', 'true');
-                console.log('[TelnetExtractor] Найдена новая textarea');
+                console.log('[Userside Improver] Найдена новая textarea');
                 observeTextarea(textarea);
             }
         });
