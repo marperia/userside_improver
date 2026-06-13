@@ -185,6 +185,11 @@
     color: white;
 }
 
+.equipment-telnet-btn {
+    background: #1875a7;
+    color: white;
+}
+
 .equipment-zabbix-btn {
     background: #d73a3a;
     color: white;

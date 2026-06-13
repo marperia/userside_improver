@@ -728,6 +728,15 @@ function addCustomerCardFeatures() {
                 });
             });
 
+            italicEl.querySelectorAll('.equipment-telnet-btn').forEach(btn => {
+                const ipVal = btn.dataset.ip;
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href(`telnet://${ipVal}`);
+                });
+            });
+
             italicEl.querySelectorAll('.equipment-zabbix-btn').forEach(btn => {
                 const ipVal = btn.dataset.ip;
                 btn.addEventListener('click', (e) => {
