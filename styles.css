@@ -164,7 +164,8 @@
     font-size:11px;
 }
 
-.equipment-ip-copy {
+.equipment-btn {
+    margin-bottom: 4px;
     margin-left: 4px;
     padding: 2px 6px;
     background: #4a5568;
@@ -172,26 +173,21 @@
     border: none;
     cursor: pointer;
     font-size: 11px;
+}
+
+.equipment-ip-copy {
+    background: #4a5568;
+    color: white;
 }
 
 .equipment-port-copy {
-    margin-left: 4px;
-    padding: 2px 6px;
     background: #4a5568;
     color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 11px;
 }
 
 .equipment-zabbix-btn {
-    margin-left: 4px;
-    padding: 2px 6px;
     background: #d73a3a;
     color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 11px;
 }
 
 /* Стили для кнопки вставки из буфера */

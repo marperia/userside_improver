@@ -689,11 +689,13 @@ function addCustomerCardFeatures() {
                 const ipMatch = part.match(/IP:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
                 if (ipMatch) {
                     ip = ipMatch[1];
-                    return `IP: ${ip} <button class="equipment-ip-copy" data-ip="${ip}">📋 ${ip}</button> <button class="equipment-zabbix-btn" data-ip="${ip}">📊 Zabbix</button>`;
+                    return `IP: ${ip} <button class="equipment-btn equipment-ip-copy" data-ip="${ip}">📋 IP</button>
+                    <button class="equipment-btn equipment-telnet-btn" data-ip="${ip}">🔗 Telnet</button>
+                    <button class="equipment-btn equipment-zabbix-btn" data-ip="${ip}">📊 Zabbix</button>`;
                 }
                 const portMatch = part.match(/порт:\s*(.*)/);
                 if (portMatch) {
-                    return `порт: ${portMatch[1].trim()} <button class="equipment-port-copy" data-port="${portMatch[1].trim()}">📋 Порт</button>`;
+                    return `порт: ${portMatch[1].trim()} <button class="equipment-btn equipment-port-copy" data-port="${portMatch[1].trim()}">📋 Порт</button>`;
                 }
                 return part;
             });
