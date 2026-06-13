@@ -616,7 +616,6 @@ function addCustomerCardFeatures() {
                 btn.textContent = '📋 Лицевой';
                 btn.className = 'account-copy-btn';
                 btn.type = 'button';
-                btn.style.cssText = 'margin-left:6px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;';
                 btn.addEventListener('click', async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -650,7 +649,6 @@ function addCustomerCardFeatures() {
                 link.textContent = '🔍 NetBox';
                 link.className = 'ip-netbox-link';
                 link.title = 'Поиск в NetBox';
-                link.style.cssText = 'margin-left:6px;text-decoration:none;font-size:12px;';
                 firstDiv.appendChild(link);
             }
 
@@ -660,7 +658,6 @@ function addCustomerCardFeatures() {
                 btn.textContent = '📋 MAC';
                 btn.className = 'mac-copy-btn';
                 btn.type = 'button';
-                btn.style.cssText = 'margin-left:6px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;';
                 btn.addEventListener('click', async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -692,11 +689,11 @@ function addCustomerCardFeatures() {
                 const ipMatch = part.match(/IP:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
                 if (ipMatch) {
                     ip = ipMatch[1];
-                    return `IP: ${ip} <button class="equipment-ip-copy" data-ip="${ip}" style="margin-left:4px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;">📋 ${ip}</button> <button class="equipment-zabbix-btn" data-ip="${ip}" style="margin-left:4px;padding:2px 6px;background:#d73a3a;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;">📊 Zabbix</button>`;
+                    return `IP: ${ip} <button class="equipment-ip-copy" data-ip="${ip}">📋 ${ip}</button> <button class="equipment-zabbix-btn" data-ip="${ip}">📊 Zabbix</button>`;
                 }
                 const portMatch = part.match(/порт:\s*(.*)/);
                 if (portMatch) {
-                    return `порт: ${portMatch[1].trim()} <button class="equipment-port-copy" data-port="${portMatch[1].trim()}" style="margin-left:4px;padding:2px 6px;background:#4a5568;color:white;border:none;border-radius:3px;cursor:pointer;font-size:11px;">📋 Порт</button>`;
+                    return `порт: ${portMatch[1].trim()} <button class="equipment-port-copy" data-port="${portMatch[1].trim()}">📋 Порт</button>`;
                 }
                 return part;
             });

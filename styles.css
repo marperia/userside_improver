@@ -19,7 +19,6 @@
     margin-bottom: 12px;
     padding: 8px;
     background: white;
-    border-radius: 4px;
     border-left: 3px solid #0066cc;
 }
 
@@ -44,13 +43,12 @@
     align-items: center;
 }
 
-/* Единый стиль для всех кнопок в строке (IP, порт, telnet, zabbix) */
+/* Единый стиль для всех кнопок в строке (IP, порт, telnet, zabbix, netbox) */
 .copy-button {
     padding: 6px 12px;
     background: #4a5568;
     color: white;
     border: none;
-    border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
     font-family: monospace;
@@ -62,13 +60,13 @@
     background: #2d3748;
 }
 
-/* Telnet и Zabbix — синий */
+/* Copy buttons — синий */
 .copy-button.telnet-btn {
     background: #1875a7;
 }
 
 .copy-button.telnet-btn:hover {
-    background: #125a82;
+    background: #095882;
 }
 
 /* Кнопка Zabbix */
@@ -78,6 +76,21 @@
 
 .copy-button.zabbix-btn:hover {
     background: #b32d2d;
+}
+
+/* Кнопка NetBox */
+.ip-netbox-link {
+    background-color: #8fc7ff;
+    color: #777;
+    padding: 4px 8px;
+    margin-left:6px;
+    text-decoration:none;
+    font-size:12px;
+}
+
+.ip-netbox-link:hover {
+    background-color: #0080ff;
+    color: #fff;
 }
 
 /* Кнопки команд */
@@ -116,7 +129,7 @@
 }
 
 .copy-btn:hover {
-    background: #125a82;
+    background: #095882;
 }
 
 .separator {
@@ -131,8 +144,6 @@
     padding: 4px 8px;
     background: #4a5568;
     color: white;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
     font-size: 11px;
     font-family: monospace;
@@ -141,6 +152,49 @@
 
 .phone-copy-btn:hover {
     background: #2d3748;
+}
+
+.account-copy-btn, .mac-copy-btn {
+    margin-left:6px;
+    padding:2px 6px;
+    background:#4a5568;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-size:11px;
+}
+
+.equipment-ip-copy {
+    margin-left: 4px;
+    padding: 2px 6px;
+    background: #4a5568;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.equipment-port-copy {
+    margin-left: 4px;
+    padding: 2px 6px;
+    background: #4a5568;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.equipment-zabbix-btn {
+    margin-left: 4px;
+    padding: 2px 6px;
+    background: #d73a3a;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
 }
 
 /* Стили для кнопки вставки из буфера */
