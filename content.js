@@ -168,6 +168,9 @@ function findAndAddPhoneButton() {
 
                 if (phoneCell) {
                     const phoneText = phoneCell.textContent.trim();
+                    if (phoneText.length >= 20) {
+                        continue;
+                    }
                     console.log('[Userside Improver] Найден номер телефона:', phoneText);
 
                     // Очищаем номер от всех разделителей (черточки, пробелы, скобки)
