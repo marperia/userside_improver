@@ -41,31 +41,25 @@ function readClipboardWithFallback() {
     });
 }
 
-// Функция для создания кнопок вставки в opis
-function createPasteButton() {
+// Функция для создания кнопок вставки в opis и comment
+function createPasteButton(textarea) {
     if (document.querySelector('.paste-from-clipboard-btn')) return;
-
-    const opisTextarea = document.querySelector('textarea[name="opis"]');
-    if (!opisTextarea) {
-        console.log('[Userside Improver] Textarea opis не найдена для кнопок');
-        return;
-    }
 
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'paste-button-container';
     const secondRow = document.createElement('div');
     secondRow.className = 'paste-button-container';
 
-    function appendToOpis(text) {
-        const currentText = opisTextarea.value;
-        opisTextarea.value = currentText + text;
+    function appendToTextarea(text) {
+        const currentText = textarea.value;
+        textarea.value = currentText + text;
         const event = new Event('input', { bubbles: true });
-        opisTextarea.dispatchEvent(event);
+        textarea.dispatchEvent(event);
     }
 
     // Кнопка "нет отв х3"
     const btn1 = document.createElement('button');
-    btn1.textContent = '📋 Нет отв х3';
+    btn1.textContent = '📞 Нет отв х3';
     btn1.className = 'paste-from-clipboard-btn';
     btn1.type = 'button';
     btn1.addEventListener('click', async (e) => {
@@ -73,7 +67,7 @@ function createPasteButton() {
         e.stopPropagation();
         const clipText = await readClipboardWithFallback();
         if (clipText !== null) {
-            appendToOpis(clipText + ' нет ответа х3');
+            appendToTextarea(clipText + ' нет ответа х3');
             showNotification('✅ "Нет ответа х3" добавлено', '#4CAF50');
         }
     });
@@ -86,7 +80,7 @@ function createPasteButton() {
     btn2.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        appendToOpis('Всё заработало');
+        appendToTextarea('Всё заработало');
         showNotification('✅ "всё заработало" добавлено', '#4CAF50');
     });
 
@@ -100,14 +94,14 @@ function createPasteButton() {
         e.stopPropagation();
         const clipText = await readClipboardWithFallback();
         if (clipText !== null) {
-            appendToOpis('Зарегал мак ' + clipText);
+            appendToTextarea('Зарегал мак ' + clipText);
             showNotification('✅ "Зарегал мак" добавлено', '#4CAF50');
         }
     });
 
     // Кнопка "Скинул инструкции в Максе"
     const btn4 = document.createElement('button');
-    btn4.textContent = 'МАХ Инс';
+    btn4.textContent = '✉️ МАХ Инс';
     btn4.className = 'paste-from-clipboard-btn';
     btn4.type = 'button';
     btn4.addEventListener('click', async (e) => {
@@ -115,14 +109,14 @@ function createPasteButton() {
         e.stopPropagation();
         const clipText = await readClipboardWithFallback();
         if (clipText !== null) {
-            appendToOpis('Скинул инструкции в Максе ' + clipText + ' ');
+            appendToTextarea('Скинул инструкции в Максе ' + clipText + ' ');
             showNotification('✅ "МАХ Инструкции" добавлено', '#4CAF50');
         }
     });
 
     // Кнопка "Отписал в Максе"
     const btn5 = document.createElement('button');
-    btn5.textContent = 'МАХ Отп';
+    btn5.textContent = '✍️ МАХ Отп';
     btn5.className = 'paste-from-clipboard-btn';
     btn5.type = 'button';
     btn5.addEventListener('click', async (e) => {
@@ -130,7 +124,7 @@ function createPasteButton() {
         e.stopPropagation();
         const clipText = await readClipboardWithFallback();
         if (clipText !== null) {
-            appendToOpis('Отписал в Максе ' + clipText + ' ');
+            appendToTextarea('Отписал в Максе ' + clipText + ' ');
             showNotification('✅ "МАХ Отписал" добавлено', '#4CAF50');
         }
     });
@@ -140,8 +134,8 @@ function createPasteButton() {
     buttonContainer.appendChild(btn3);
     secondRow.appendChild(btn4);
     secondRow.appendChild(btn5);
-    opisTextarea.parentElement.insertBefore(secondRow, opisTextarea);
-    opisTextarea.parentElement.insertBefore(buttonContainer, opisTextarea);
+    textarea.parentElement.insertBefore(secondRow, textarea);
+    textarea.parentElement.insertBefore(buttonContainer, textarea);
     console.log('[Userside Improver] Кнопки добавлены');
 }
 
@@ -694,8 +688,21 @@ function init() {
 
     // Создание кнопки вставки из буфера
     setInterval(() => {
-        createPasteButton();
-    }, 500);
+        const opisTextarea = document.querySelector('textarea[name="opis"]');
+        const commentTextarea = document.querySelector('textarea[name="comment"]');
+        if (opisTextarea) {
+            console.log('[Userside Improver] Textarea opis найдена для кнопок');  
+            createPasteButton(opisTextarea);
+            return;
+        } else if (commentTextarea) {
+            console.log('[Userside Improver] Textarea comment найдена для кнопок');
+            createPasteButton(commentTextarea);
+            return;
+        } else {
+            console.log('[Userside Improver] Не найдена Textarea opis и comment')
+            return;
+        }
+    }, 1000);
 
     // Дополнительные функции для карточки абонента
     setTimeout(() => {
