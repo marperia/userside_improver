@@ -12,6 +12,14 @@
     "clipboardWrite",
     "clipboardRead"
   ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "golden-mountains@yandex.ru",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
   "content_scripts": [
     {
       "matches": ["http://userside.piramida.local/*", "https://userside.piramida.local/*"],
