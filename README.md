@@ -2,7 +2,7 @@
 
 # Userside Improver
 Userside web interface firefox improver
-<img src="" alt="screenshot" width="759" />
+<img src="img/screenshot_1.jpg" alt="screenshot" width="759" />
 
 # Roadmap
 
