@@ -341,7 +341,9 @@ function createLinkAndButtons(ip, port, index) {
     // Информация о найденной паре - показываем только IP и полный порт
     const pairInfo = document.createElement('div');
     pairInfo.className = 'pair-info';
-    pairInfo.innerHTML = `<strong>${ip}</strong> → ${port}`;
+    const ips = document.createElement('strong');
+    ips.textContent = ip;
+    pairInfo.appendChild(ips).append(` → ${port}`);
     container.appendChild(pairInfo);
 
     // БЛОК КНОПОК - все одинаковые, на одной высоте
@@ -495,7 +497,7 @@ function processTextarea(textarea) {
 
     const header = document.createElement('div');
     header.className = 'extractor-header';
-    header.innerHTML = `🔍 Найдено ${matches.length} совпадений:`;
+    header.append = `🔍 Найдено ${matches.length} совпадений:`;
     wrapper.appendChild(header);
 
     matches.forEach((match, idx) => {
@@ -611,7 +613,7 @@ function addCustomerCardFeatures() {
             const italicEl = contentDiv.querySelector('i');
             if (!italicEl || contentDiv.querySelector('.equipment-ip-copy')) break;
 
-            const parts = italicEl.innerHTML.split(/<br\s*\/?>/i);
+            const parts = italicEl.textContent.split(/<br\s*\/?>/i);
             let ip = null;
 
             const newParts = parts.map(part => {
@@ -629,7 +631,7 @@ function addCustomerCardFeatures() {
                 return part;
             });
 
-            italicEl.innerHTML = newParts.join('<br>');
+            italicEl.textContent = newParts.join('\n');
 
             italicEl.querySelectorAll('.equipment-ip-copy').forEach(btn => {
                 const ipVal = btn.dataset.ip;
@@ -728,7 +730,7 @@ function init() {
 // Вспомогательная функция для уведомлений
 function showNotification(message, bgColor) {
     const notification = document.createElement('div');
-    notification.innerHTML = message;
+    notification.append = message;
     notification.style.cssText = `position:fixed; bottom:10px; right:10px; background:${bgColor}; color:white; padding:8px 12px; border-radius:5px; z-index:10000; font-size:12px; font-family:monospace;`;
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
