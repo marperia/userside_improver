@@ -616,22 +616,78 @@ function addCustomerCardFeatures() {
             const parts = italicEl.textContent.split(/<br\s*\/?>/i);
             let ip = null;
 
-            const newParts = parts.map(part => {
+            const fragment = document.createDocumentFragment();
+
+            parts.forEach((part, index) => {
                 const ipMatch = part.match(/IP:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
-                if (ipMatch) {
-                    ip = ipMatch[1];
-                    return `IP: ${ip} <button class="equipment-btn equipment-ip-copy" data-ip="${ip}">📋 IP</button>
-                    <button class="equipment-btn equipment-telnet-btn" data-ip="${ip}">🔗 Telnet</button>
-                    <button class="equipment-btn equipment-zabbix-btn" data-ip="${ip}">📊 Zabbix</button>`;
-                }
                 const portMatch = part.match(/порт:\s*(.*)/);
-                if (portMatch) {
-                    return `порт: ${portMatch[1].trim()} <button class="equipment-btn equipment-port-copy" data-port="${portMatch[1].trim()}">📋 Порт</button>`;
+                
+                const lineDiv = document.createElement('div');
+                lineDiv.style.display = 'flex';
+                lineDiv.style.alignItems = 'center';
+                lineDiv.style.gap = '8px';
+                lineDiv.style.flexWrap = 'wrap';
+                
+                if (ipMatch && portMatch) {
+                    const ip = ipMatch[1];
+                    const port = portMatch[1].trim();
+                    
+                    const buttons = [
+                        { text: '📋 IP', className: 'equipment-ip-copy', dataset: { ip } },
+                        { text: '📋 Порт', className: 'equipment-ip-copy', dataset: { port } },
+                        { text: '🔗 Telnet', className: 'equipment-telnet-btn', dataset: { ip } },
+                        { text: '📊 Zabbix', className: 'equipment-zabbix-btn', dataset: { ip } }
+                    ];
+                    
+                    buttons.forEach(({ text, className, dataset }) => {
+                        const btn = document.createElement('button');
+                        btn.textContent = text;
+                        btn.className = `equipment-btn ${className}`;
+                        Object.entries(dataset).forEach(([key, value]) => {
+                            btn.dataset[key] = value;
+                        });
+                        lineDiv.appendChild(btn);
+                    });
+                } else if (ipMatch) {
+                    const ip = ipMatch[1];
+                    
+                    const buttons = [
+                        { text: '📋 IP', className: 'equipment-ip-copy', dataset: { ip } },
+                        { text: '🔗 Telnet', className: 'equipment-telnet-btn', dataset: { ip } },
+                        { text: '📊 Zabbix', className: 'equipment-zabbix-btn', dataset: { ip } }
+                    ];
+                    
+                    buttons.forEach(({ text, className, dataset }) => {
+                        const btn = document.createElement('button');
+                        btn.textContent = text;
+                        btn.className = `equipment-btn ${className}`;
+                        Object.entries(dataset).forEach(([key, value]) => {
+                            btn.dataset[key] = value;
+                        });
+                        lineDiv.appendChild(btn);
+                    });
+                } else if (portMatch) {
+                    const port = portMatch[1].trim();
+                    
+                    const btn = document.createElement('button');
+                    btn.textContent = '📋 Порт';
+                    btn.className = 'equipment-btn equipment-port-copy';
+                    btn.dataset.port = port;
+                    lineDiv.appendChild(btn);
+                    
+                } else {
+                    const textSpan = document.createElement('span');
+                    textSpan.textContent = part;
+                    lineDiv.appendChild(textSpan);
                 }
-                return part;
+                
+                italicEl.appendChild(lineDiv);
+                if (index < parts.length - 1) {
+                    italicEl.appendChild(document.createElement('br'));
+                }
             });
 
-            italicEl.textContent = newParts.join('\n');
+            italicEl.appendChild(fragment);
 
             italicEl.querySelectorAll('.equipment-ip-copy').forEach(btn => {
                 const ipVal = btn.dataset.ip;
