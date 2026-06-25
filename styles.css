@@ -230,3 +230,11 @@
 .staff-control-btn:hover {
     background: #095882;
 }
+
+/* ===== КНОПКИ ТИПОВ ЗАДАЧ ===== */
+.task-type-btn {
+    padding: 5px 15px 5px 0px;
+    cursor: pointer;
+    font-size: 30px;
+    text-decoration: none;
+}

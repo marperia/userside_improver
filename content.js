@@ -894,6 +894,50 @@ function createStaffControlButton() {
     console.log('[Userside Improver] 4 кнопки управления исполнителями добавлены');
 }
 
+// ===== Функция для создания кнопок "Монтёр" и "Платно" (вставка в текст) =====
+function createTaskTypeButtons() {
+    console.log('[Userside Improver] Создание кнопок типов задач...');
+    
+    if (document.querySelector('.task-type-btn')) {
+        return;
+    }
+    
+    // Получаем ID задачи
+    let taskId = null;
+    const urlParams = new URLSearchParams(window.location.search);
+    taskId = urlParams.get('id');
+    
+    if (!taskId) {
+        const hiddenId = document.querySelector('input[name="id"]');
+        if (hiddenId) {
+            taskId = hiddenId.value;
+        }
+    }
+    
+    if (!taskId) {
+        console.log('[Userside Improver] ID задачи не найден');
+        return;
+    }
+    
+    console.log('[Userside Improver] ID задачи:', taskId);
+    
+    // Создаем кнопки
+    const monterLink = document.createElement('a');
+    monterLink.href = `http://userside.piramida.local/oper/?core_section=task&action=add_mark&id=${taskId}&mark_id=12`;
+    monterLink.className = 'j_button us-icon-task-card task-type-btn';
+    monterLink.textContent = '🔧';
+    
+    const platnoLink = document.createElement('a');
+    platnoLink.href = `http://userside.piramida.local/oper/?core_section=task&action=add_mark&id=${taskId}&mark_id=9`;
+    platnoLink.className = 'j_button us-icon-task-card task-type-btn';
+    platnoLink.textContent = '💰';
+
+    document.getElementsByClassName("j_button")[0].parentNode.parentNode.insertAdjacentElement("beforeend", platnoLink);
+    document.getElementsByClassName("j_button")[0].parentNode.parentNode.insertAdjacentElement("beforeend", monterLink);
+    
+    console.log('[Userside Improver] Кнопки "Монтёр" и "Платно" добавлены');
+}
+
 function init() {
     console.log('[Userside Improver] Инициализация...');
 
@@ -917,6 +961,11 @@ function init() {
             return;
         }
     }, 1000);
+
+    // Создание кнопок типов задач
+    setTimeout(() => {
+        createTaskTypeButtons();
+    }, 800);
 
     // Дополнительные функции для карточки абонента
     setTimeout(() => {
