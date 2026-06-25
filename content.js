@@ -738,6 +738,83 @@ function addCustomerCardFeatures() {
     }
 }
 
+// ===== Функция для создания кнопки управления исполнителями =====
+function createStaffControlButton() {
+    console.log('[Userside Improver] Создание кнопки управления исполнителями...');
+    
+    // Проверяем, есть ли уже такая кнопка
+    if (document.querySelector('.staff-control-btn')) {
+        return;
+    }
+    
+    // Находим диалог с исполнителями
+    const dialogContent = document.querySelector('.dialog-content #dialog_message');
+    if (!dialogContent) {
+        console.log('[Userside Improver] Диалог исполнителей не найден');
+        return;
+    }
+    
+    // Находим форму
+    const form = dialogContent.querySelector('form');
+    if (!form) {
+        console.log('[Userside Improver] Форма не найдена');
+        return;
+    }
+    
+    // Находим контейнер с чекбоксами
+    const checkboxContainer = form.querySelector('div[style*="width: 300px"]');
+    if (!checkboxContainer) {
+        console.log('[Userside Improver] Контейнер с чекбоксами не найден');
+        return;
+    }
+    
+    // Находим кнопку "Сохранить" и вставляем перед ней
+    const submitButton = form.querySelector('#submit_but_id');
+    if (!submitButton) {
+        console.log('[Userside Improver] Кнопка сохранить не найдена');
+        return;
+    }
+    
+    // Создаем кнопку
+    const gponButton = document.createElement('button');
+    gponButton.textContent = '👥 GPON';
+    gponButton.className = 'staff-control-btn';
+    gponButton.type = 'button';
+    
+    gponButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Снимаем галку с Служба эксплуатации сетей связи
+        const otdel4Checkbox = form.querySelector('input[name="add_pers_otdel_4"]');
+        if (otdel4Checkbox) {
+            otdel4Checkbox.checked = false;
+            console.log('[Userside Improver] Снята галка с add_pers_otdel_4');
+        }
+        
+        // Ставим галку на календарь повреждений
+        const pers48Checkbox = form.querySelector('input[name="add_pers_48"]');
+        if (pers48Checkbox) {
+            pers48Checkbox.checked = true;
+            console.log('[Userside Improver] Поставлена галка на add_pers_48');
+        }
+        
+        // Ставим галку на GPON
+        const pers125Checkbox = form.querySelector('input[name="add_pers_125"]');
+        if (pers125Checkbox) {
+            pers125Checkbox.checked = true;
+            console.log('[Userside Improver] Поставлена галка на add_pers_125');
+        }
+        
+        // Показываем уведомление
+        showNotification('✅ Исполнители изменены: Снята Служба эксплуатации, добавлены Календарь повреждений и Календарь повреждений GPON', '#4CAF50');
+    });
+    
+    // Вставляем кнопку перед кнопкой "Сохранить"
+    submitButton.parentElement.insertBefore(gponButton, submitButton);
+    console.log('[Userside Improver] Кнопка управления исполнителями добавлена');
+}
+
 function init() {
     console.log('[Userside Improver] Инициализация...');
 
@@ -765,6 +842,11 @@ function init() {
     // Дополнительные функции для карточки абонента
     setTimeout(() => {
         addCustomerCardFeatures();
+    }, 1000);
+
+    // Создание кнопкок управления исполнителями
+    setInterval(() => {
+        createStaffControlButton();
     }, 1000);
 
     const allTextareas = findAllTextareas();
