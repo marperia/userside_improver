@@ -162,7 +162,7 @@ function findAndAddPhoneButton() {
 
                 if (phoneCell) {
                     const phoneText = phoneCell.textContent.trim();
-                    if (phoneText.length >= 20) {
+                    if (phoneText.length >= 50) {
                         continue;
                     }
                     console.log('[Userside Improver] Найден номер телефона:', phoneText);
