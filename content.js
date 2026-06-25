@@ -738,11 +738,11 @@ function addCustomerCardFeatures() {
     }
 }
 
-// ===== Функция для создания кнопки управления исполнителями =====
+// ===== Функция для создания кнопок управления исполнителями =====
 function createStaffControlButton() {
-    console.log('[Userside Improver] Создание кнопки управления исполнителями...');
+    console.log('[Userside Improver] Создание кнопок управления исполнителями...');
     
-    // Проверяем, есть ли уже такая кнопка
+    // Проверяем, есть ли уже такие кнопки
     if (document.querySelector('.staff-control-btn')) {
         return;
     }
@@ -761,24 +761,24 @@ function createStaffControlButton() {
         return;
     }
     
-    // Находим контейнер с чекбоксами
-    const checkboxContainer = form.querySelector('div[style*="width: 300px"]');
-    if (!checkboxContainer) {
-        console.log('[Userside Improver] Контейнер с чекбоксами не найден');
-        return;
-    }
-    
-    // Находим кнопку "Сохранить" и вставляем перед ней
+    // Находим кнопку "Сохранить"
     const submitButton = form.querySelector('#submit_but_id');
     if (!submitButton) {
         console.log('[Userside Improver] Кнопка сохранить не найдена');
         return;
     }
     
-    // Создаем кнопку
+    // Создаем контейнер для кнопок
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.marginBottom = '10px';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.gap = '8px';
+    buttonContainer.style.flexWrap = 'wrap';
+    
+    // ===== КНОПКА GPON =====
     const gponButton = document.createElement('button');
-    gponButton.textContent = '👥 GPON';
-    gponButton.className = 'staff-control-btn';
+    gponButton.textContent = '➿ GPON';
+    gponButton.className = 'staff-control-btn staff-btn-gpon';
     gponButton.type = 'button';
     
     gponButton.addEventListener('click', (event) => {
@@ -806,13 +806,92 @@ function createStaffControlButton() {
             console.log('[Userside Improver] Поставлена галка на add_pers_125');
         }
         
-        // Показываем уведомление
-        showNotification('✅ Исполнители изменены: Снята Служба эксплуатации, добавлены Календарь повреждений и Календарь повреждений GPON', '#4CAF50');
+        showNotification('✅ GPON: Снята Служба эксплуатации, добавлены Календарь повреждений и GPON', '#4CAF50');
     });
     
-    // Вставляем кнопку перед кнопкой "Сохранить"
-    submitButton.parentElement.insertBefore(gponButton, submitButton);
-    console.log('[Userside Improver] Кнопка управления исполнителями добавлена');
+    // ===== КНОПКА КАМПУС =====
+    const campusButton = document.createElement('button');
+    campusButton.textContent = '🔌 Кампус';
+    campusButton.className = 'staff-control-btn staff-btn-campus';
+    campusButton.type = 'button';
+    
+    campusButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Снимаем галку с Служба эксплуатации сетей связи
+        const otdel4Checkbox = form.querySelector('input[name="add_pers_otdel_4"]');
+        if (otdel4Checkbox) {
+            otdel4Checkbox.checked = false;
+            console.log('[Userside Improver] Снята галка с add_pers_otdel_4');
+        }
+        
+        // Ставим галку на календарь повреждений
+        const pers48Checkbox = form.querySelector('input[name="add_pers_48"]');
+        if (pers48Checkbox) {
+            pers48Checkbox.checked = true;
+            console.log('[Userside Improver] Поставлена галка на add_pers_48');
+        }
+        
+        // Ставим галку на КАМПУС
+        const pers126Checkbox = form.querySelector('input[name="add_pers_126"]');
+        if (pers126Checkbox) {
+            pers126Checkbox.checked = true;
+            console.log('[Userside Improver] Поставлена галка на add_pers_126');
+        }
+        
+        showNotification('✅ Кампус: Снята Служба эксплуатации, добавлены Календарь повреждений и КАМПУС', '#4CAF50');
+    });
+    
+    // ===== КНОПКА УЖУР =====
+    const ujurButton = document.createElement('button');
+    ujurButton.textContent = '📍 Ужур';
+    ujurButton.className = 'staff-control-btn staff-btn-ujur';
+    ujurButton.type = 'button';
+    
+    ujurButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Ставим галку на Федяйкина О.А.
+        const pers104Checkbox = form.querySelector('input[name="add_pers_104"]');
+        if (pers104Checkbox) {
+            pers104Checkbox.checked = true;
+            console.log('[Userside Improver] Поставлена галка на add_pers_104 (Ужур)');
+        }
+        
+        showNotification('✅ Ужур: Добавлена Федяйкина О.А.', '#4CAF50');
+    });
+    
+    // ===== КНОПКА ШАРЫПОВО =====
+    const sharypovoButton = document.createElement('button');
+    sharypovoButton.textContent = '📍 Шарыпово';
+    sharypovoButton.className = 'staff-control-btn staff-btn-sharypovo';
+    sharypovoButton.type = 'button';
+    
+    sharypovoButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Ставим галку на Решетникова Л.Г.
+        const pers120Checkbox = form.querySelector('input[name="add_pers_120"]');
+        if (pers120Checkbox) {
+            pers120Checkbox.checked = true;
+            console.log('[Userside Improver] Поставлена галка на add_pers_120 (Шарыпово)');
+        }
+        
+        showNotification('✅ Шарыпово: Добавлена Решетникова Л.Г.', '#4CAF50');
+    });
+    
+    // Добавляем все кнопки в контейнер
+    buttonContainer.appendChild(gponButton);
+    buttonContainer.appendChild(campusButton);
+    buttonContainer.appendChild(ujurButton);
+    buttonContainer.appendChild(sharypovoButton);
+    
+    // Вставляем контейнер перед кнопкой "Сохранить"
+    submitButton.parentElement.insertBefore(buttonContainer, submitButton);
+    console.log('[Userside Improver] 4 кнопки управления исполнителями добавлены');
 }
 
 function init() {
