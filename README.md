@@ -6,9 +6,11 @@ Userside web interface firefox improver
 <img src="img/Screenshot_2.png" alt="screenshot" width="1239" />
 <img src="img/Screenshot_3.png" alt="screenshot" width="643" />
 <img src="img/Screenshot_4.png" alt="screenshot" width="926" />
+<img src="img/Screenshot_5.png" alt="screenshot" width="862" />
 
 # Roadmap
 
 - [ ] Add copy phone button to every phone
 - [X] Add comment buttons with clipboard functionality
 - [X] Add telnet and copy IP buttons
+- [X] Add GPON, ETTH, Uzur, Sharipovo, Paid and Monter buttons
