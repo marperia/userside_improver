@@ -753,6 +753,13 @@ function createStaffControlButton() {
         console.log('[Userside Improver] Диалог исполнителей не найден');
         return;
     }
+
+    // Находим заголовок и проверяем, чтобы он был "Исполнители"
+    const header = dialogContent.querySelector('.dialog_header span');
+    if (header.textContent !== "Исполнители") {
+        console.log('[Userside Improver] Заголовок диалога не исполнители');
+        return;
+    }
     
     // Находим форму
     const form = dialogContent.querySelector('form');
