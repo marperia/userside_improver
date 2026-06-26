@@ -44,6 +44,7 @@ function readClipboardWithFallback() {
 // Функция для создания кнопок вставки в opis и comment
 function createPasteButton(textarea) {
     if (document.querySelector('.paste-from-clipboard-btn')) return;
+    if (document.querySelector('.dialog-content #dialog_message .dialog_header span').textContent !== "Добавление комментария") return;
 
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'paste-button-container';
