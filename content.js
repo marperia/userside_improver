@@ -132,11 +132,27 @@ function createPasteButton(textarea) {
         }
     });
 
+    // Кнопка затухание 20 и обрыв
+    const btn6 = document.createElement('button');
+    btn6.textContent = '⛓️‍💥 Обрыв';
+    btn6.className = 'paste-from-clipboard-btn';
+    btn6.type = 'button';
+    btn6.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const clipText = await readClipboardWithFallback();
+        if (clipText !== null) {
+            appendToTextarea('Затухание 20 и обрыв \nБлокировку поставил');
+            showNotification('✅ "Затухание 20 и обрыв" добавлено', '#4CAF50');
+        }
+    });
+
     buttonContainer.appendChild(btn1);
     buttonContainer.appendChild(btn2);
     buttonContainer.appendChild(btn3);
     secondRow.appendChild(btn4);
     secondRow.appendChild(btn5);
+    secondRow.appendChild(btn6);
     textarea.parentElement.insertBefore(secondRow, textarea);
     textarea.parentElement.insertBefore(buttonContainer, textarea);
     console.log('[Userside Improver] Кнопки добавлены');
