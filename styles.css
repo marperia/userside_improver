@@ -232,7 +232,7 @@
 }
 
 /* ===== КНОПКИ ТИПОВ ЗАДАЧ ===== */
-.task-type-btn {
+.task-type-btn, .task-type-btn:active {
     padding: 5px 15px 5px 0px;
     cursor: pointer;
     font-size: 30px;
