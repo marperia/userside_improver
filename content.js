@@ -45,7 +45,7 @@ function readClipboardWithFallback() {
 function createPasteButton(textarea) {
     if (document.querySelector('.paste-from-clipboard-btn')) return;
     const dialogHeader = document.querySelector('.dialog-content #dialog_message .dialog_header span');
-    console.log(dialogHeader.textContent);
+    if (!dialogHeader) return;
     if (dialogHeader.textContent !== "Добавление комментария" && dialogHeader.textContent !== "Комментарий") return;
 
     const buttonContainer = document.createElement('div');
@@ -623,136 +623,127 @@ function addCustomerCardFeatures() {
     }
 
     // 3. Кнопки для IP и порта из Точки подключения
-    for (const item of accountItems) {
+    console.log('[Userside Improver] Обработка точек подключения...');
+    
+    // Ищем все блоки с классом item, где есть left_data с текстом "Точка подключения:"
+    const items = document.querySelectorAll('.item');
+    
+    for (const item of items) {
         const leftData = item.querySelector('.left_data');
         if (leftData && leftData.textContent.trim() === 'Точка подключения:') {
+            // Находим блок с содержимым (правую часть)
             const contentDiv = item.querySelector('div:not(.left_data)');
-            if (!contentDiv) break;
-
-            const italicEl = contentDiv.querySelector('i');
-            if (!italicEl || contentDiv.querySelector('.equipment-ip-copy')) break;
-
-            const parts = italicEl.textContent.split(/<br\s*\/?>/i);
-            let ip = null;
-
-            const fragment = document.createDocumentFragment();
-
-            parts.forEach((part, index) => {
-                const ipMatch = part.match(/IP:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
-                const portMatch = part.match(/порт:\s*(.*)/);
+            if (!contentDiv) continue;
+            
+            // Ищем все элементы <i> внутри contentDiv
+            const italicElements = contentDiv.querySelectorAll('i');
+            
+            for (const italicEl of italicElements) {
+                // Проверяем, есть ли уже кнопки в этом элементе
+                if (italicEl.querySelector('.equipment-btn')) continue;
                 
-                const lineDiv = document.createElement('div');
-                lineDiv.style.display = 'flex';
-                lineDiv.style.alignItems = 'center';
-                lineDiv.style.gap = '8px';
-                lineDiv.style.flexWrap = 'wrap';
+                const htmlContent = italicEl.textContent;
                 
-                if (ipMatch && portMatch) {
-                    const ip = ipMatch[1];
-                    const port = portMatch[1].trim();
+                // Ищем IP и порт в тексте
+                const ipMatch = htmlContent.match(/IP:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/);
+                const portMatch = htmlContent.match(/порт:\s*([^\s<]+)/);
+                
+                // Разбиваем содержимое на части для сохранения структуры
+                const parts = htmlContent.split(/<br\s*\/?>/i);
+                
+                // Создаем новый контейнер для содержимого
+                const newContent = document.createElement('div');
+                
+                // Добавляем кнопки, если найдены IP и/или порт
+                if (ipMatch || portMatch) {
+                    // Строка с кнопками
+                    const buttonRow = document.createElement('div');
+                    buttonRow.style.display = 'flex';
+                    buttonRow.style.gap = '8px';
+                    buttonRow.style.flexWrap = 'wrap';
+                    buttonRow.style.marginTop = '4px';
                     
-                    const buttons = [
-                        { text: '📋 IP', className: 'equipment-ip-copy', dataset: { ip } },
-                        { text: '📋 Порт', className: 'equipment-ip-copy', dataset: { port } },
-                        { text: '🔗 Telnet', className: 'equipment-telnet-btn', dataset: { ip } },
-                        { text: '📊 Zabbix', className: 'equipment-zabbix-btn', dataset: { ip } }
-                    ];
-                    
-                    buttons.forEach(({ text, className, dataset }) => {
-                        const btn = document.createElement('button');
-                        btn.textContent = text;
-                        btn.className = `equipment-btn ${className}`;
-                        Object.entries(dataset).forEach(([key, value]) => {
-                            btn.dataset[key] = value;
+                    // Кнопка копирования IP
+                    if (ipMatch) {
+                        const ip = ipMatch[1];
+                        const ipBtn = document.createElement('button');
+                        ipBtn.textContent = '📋 IP';
+                        ipBtn.className = 'equipment-btn equipment-ip-copy';
+                        ipBtn.dataset.ip = ip;
+                        
+                        ipBtn.addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const success = await copyToClipboard(ip, ipBtn);
+                            if (success) {
+                                ipBtn.textContent = '✅ IP';
+                                setTimeout(() => { ipBtn.textContent = '📋 IP'; }, 2000);
+                            }
                         });
-                        lineDiv.appendChild(btn);
-                    });
-                } else if (ipMatch) {
-                    const ip = ipMatch[1];
+                        buttonRow.appendChild(ipBtn);
+                    }
                     
-                    const buttons = [
-                        { text: '📋 IP', className: 'equipment-ip-copy', dataset: { ip } },
-                        { text: '🔗 Telnet', className: 'equipment-telnet-btn', dataset: { ip } },
-                        { text: '📊 Zabbix', className: 'equipment-zabbix-btn', dataset: { ip } }
-                    ];
-                    
-                    buttons.forEach(({ text, className, dataset }) => {
-                        const btn = document.createElement('button');
-                        btn.textContent = text;
-                        btn.className = `equipment-btn ${className}`;
-                        Object.entries(dataset).forEach(([key, value]) => {
-                            btn.dataset[key] = value;
+                    // Кнопка копирования порта
+                    if (portMatch) {
+                        const port = portMatch[1].trim();
+                        const portBtn = document.createElement('button');
+                        portBtn.textContent = '📋 Порт';
+                        portBtn.className = 'equipment-btn equipment-port-copy';
+                        portBtn.dataset.port = port;
+                        
+                        portBtn.addEventListener('click', async (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const success = await copyToClipboard(port, portBtn);
+                            if (success) {
+                                portBtn.textContent = '✅ Порт';
+                                setTimeout(() => { portBtn.textContent = '📋 Порт'; }, 2000);
+                            }
                         });
-                        lineDiv.appendChild(btn);
-                    });
-                } else if (portMatch) {
-                    const port = portMatch[1].trim();
-                    
-                    const btn = document.createElement('button');
-                    btn.textContent = '📋 Порт';
-                    btn.className = 'equipment-btn equipment-port-copy';
-                    btn.dataset.port = port;
-                    lineDiv.appendChild(btn);
-                    
-                } else {
-                    const textSpan = document.createElement('span');
-                    textSpan.textContent = part;
-                    lineDiv.appendChild(textSpan);
-                }
-                
-                italicEl.appendChild(lineDiv);
-                if (index < parts.length - 1) {
-                    italicEl.appendChild(document.createElement('br'));
-                }
-            });
-
-            italicEl.appendChild(fragment);
-
-            italicEl.querySelectorAll('.equipment-ip-copy').forEach(btn => {
-                const ipVal = btn.dataset.ip;
-                btn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const success = await copyToClipboard(ipVal, btn);
-                    if (success) {
-                        btn.textContent = '✅ Скопировано';
-                        setTimeout(() => { btn.textContent = '📋 ' + ipVal; }, 2000);
+                        buttonRow.appendChild(portBtn);
                     }
-                });
-            });
-
-            italicEl.querySelectorAll('.equipment-port-copy').forEach(btn => {
-                const portVal = btn.dataset.port;
-                btn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const success = await copyToClipboard(portVal, btn);
-                    if (success) {
-                        btn.textContent = '✅ Скопировано';
-                        setTimeout(() => { btn.textContent = '📋 Порт'; }, 2000);
+                    
+                    // Кнопка Telnet
+                    if (ipMatch) {
+                        const ip = ipMatch[1];
+                        const telnetBtn = document.createElement('button');
+                        telnetBtn.textContent = '🔗 Telnet';
+                        telnetBtn.className = 'equipment-btn equipment-telnet-btn';
+                        telnetBtn.dataset.ip = ip;
+                        
+                        telnetBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.location.href = `telnet://${ip}`;
+                        });
+                        buttonRow.appendChild(telnetBtn);
                     }
-                });
-            });
-
-            italicEl.querySelectorAll('.equipment-telnet-btn').forEach(btn => {
-                const ipVal = btn.dataset.ip;
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.location.href = (`telnet://${ipVal}`);
-                });
-            });
-
-            italicEl.querySelectorAll('.equipment-zabbix-btn').forEach(btn => {
-                const ipVal = btn.dataset.ip;
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.open(`http://10.10.20.30/zabbix.php?action=search&search=${ipVal}`, '_blank');
-                });
-            });
-
-            break;
+                    
+                    // Кнопка Zabbix
+                    if (ipMatch) {
+                        const ip = ipMatch[1];
+                        const zabbixBtn = document.createElement('button');
+                        zabbixBtn.textContent = '📊 Zabbix';
+                        zabbixBtn.className = 'equipment-btn equipment-zabbix-btn';
+                        zabbixBtn.dataset.ip = ip;
+                        
+                        zabbixBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            window.open(`http://10.10.20.30/zabbix.php?action=search&search=${ip}`, '_blank');
+                        });
+                        buttonRow.appendChild(zabbixBtn);
+                    }
+                    
+                    // Добавляем строку с кнопками
+                    newContent.appendChild(buttonRow);
+                    
+                    // Заменяем содержимое
+                    italicEl.appendChild(newContent);
+                    
+                    console.log('[Userside Improver] Добавлены кнопки для точки подключения');
+                }
+            }
         }
     }
 }
@@ -775,6 +766,7 @@ function createStaffControlButton() {
 
     // Находим заголовок и проверяем, чтобы он был "Исполнители"
     const header = dialogContent.querySelector('.dialog_header span');
+    if (!header) return;
     if (header.textContent !== "Исполнители") {
         console.log('[Userside Improver] Заголовок диалога не исполнители');
         return;
@@ -924,9 +916,8 @@ function createStaffControlButton() {
 function createTaskTypeButtons() {
     console.log('[Userside Improver] Создание кнопок типов задач...');
     
-    if (document.querySelector('.task-type-btn')) {
-        return;
-    }
+    if (document.querySelector('.task-type-btn')) return;
+    if (!document.getElementsByClassName("j_button")) return;
     
     // Получаем ID задачи
     let taskId = null;
