@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Userside Improver",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Extracts IPs with ports and add some copy-paste buttons to the Userside interface",
   "icons": {
     "48": "icons/icon-48.png",
