@@ -140,7 +140,6 @@ function createPasteButton(textarea) {
     btn6.addEventListener('click', async (e) => {
         e.preventDefault();
         e.stopPropagation();
-        const clipText = await readClipboardWithFallback();
         if (clipText !== null) {
             appendToTextarea('Затухание 20 и обрыв \nБлокировку поставил');
             showNotification('✅ "Затухание 20 и обрыв" добавлено', '#4CAF50');
